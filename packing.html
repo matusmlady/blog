@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Packing list</title>
+    <style>
+        body {
+            background-color: sandybrown;
+            color: sienna;
+            text-align: center;
+            display: block;
+        }
+        .section-head:hover, .item:hover {
+            cursor: pointer;
+        }
+        .section-head {
+            border: 2px solid navajowhite;
+            margin-top, margin-right, margin-left: 5px;
+            background-color: lightcoral;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        .section-body {
+            border: 2px solid navajowhite;
+            border-top: none;
+            margin-top, margin-right, margin-left: 5px;
+            padding: 1%;
+	    padding-left: 3%;
+	    padding-right: 3%;
+            margin-bottom: 5px;
+        }
+        .item {
+            padding: 10px;
+            border-top: 0.1px solid palegoldenrod;
+            border-bottom: 0.1px solid palegoldenrod;
+        }
+        .crossed {
+            text-decoration: line-through;
+        }
+        .crossed.section-head {
+            background-color: palegreen;
+        }
+        .item:hover, .section-head:hover {
+            filter: brightness(1.3); /* Make the element 20% lighter on hover */
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Add click event listener to each section-head element
+            let elements = document.querySelectorAll(".section-head");
+            elements.forEach(function(element) {
+                element.addEventListener("click", function() {
+                    let nextDiv = element.nextElementSibling;
+                    if (nextDiv) {
+                        nextDiv.style.display = nextDiv.style.display == "none" ? "block" : "none";
+                    }
+                });
+            });
+
+            // Add click event listener to each item element
+            document.querySelectorAll('.item').forEach(function(subElement) {
+                subElement.addEventListener('click', function() {
+                    this.classList.toggle('crossed');
+                    let sectionBody = this.closest('.section-body');
+                    if (this.classList.contains('crossed')) {
+                        sectionBody.appendChild(this);
+                        checkAllCrossed(this)
+                    } else {
+                        sectionBody.insertBefore(this, sectionBody.firstChild)
+                        removeCrossed(this);
+                    }
+                });
+            });
+        });
+
+        function checkAllCrossed(element) {
+            let sectionBody = element.closest('.section-body');
+            if (sectionBody === null){
+                return;            
+            }
+            let allItems = sectionBody.querySelectorAll('.item');
+            let sectionHead = element.parentNode.previousElementSibling
+            if (sectionHead === null){
+                return;            
+            }
+            for (let i = 0; i < allItems.length; i++) {
+                if (!allItems[i].classList.contains('crossed')) {
+                    return;
+                }
+            }
+            sectionHead.classList.add('crossed');
+            sectionHead.click();
+            let upperSectionBody = sectionHead.closest('.section-body');
+            if (upperSectionBody === null){
+                upperSectionBody = document.body;          
+            }
+            upperSectionBody.appendChild(sectionHead);
+            upperSectionBody.appendChild(sectionBody)
+            checkAllCrossed(sectionHead);
+        }
+
+        function removeCrossed(element){
+            if (element === document.body || element === null) {
+                return;         
+            }
+            let sectionHead = element.parentNode.previousElementSibling
+            if (sectionHead === null){
+                return
+            }
+            sectionHead.classList.remove('crossed');
+            let sectionBody = element.closest('.section-body');
+            if (sectionBody === null){
+                return;            
+            }
+            let upperSectionBody = sectionHead.closest('.section-body');
+            if (upperSectionBody === null){
+                upperSectionBody = document.body;          
+            }
+            upperSectionBody.insertBefore(sectionBody, upperSectionBody.firstChild);
+            upperSectionBody.insertBefore(sectionHead, upperSectionBody.firstChild)
+
+            removeCrossed(sectionHead.closest('.section-head'));
+        }
+
+        function createBody(text) {
+            const contentDiv = document.createElement("body");
+            document.body = contentDiv;
+            let parents = [];
+            let prevSpaces = 0;
+            lines = text.split('\n');
+            for (let i = 0; i < lines.length; i++ ) {
+                let match = lines[i].match(/^\s*/);
+                spaces = match[0].length;
+		if ( i != lines.length - 1 ) {
+		    let matchNext = lines[i+1].match(/^\s*/);
+                    spacesNext = matchNext[0].length;
+		}
+                lines[i] = lines[i].trimStart();
+                // test if is a heading
+		if (i != lines.length - 1 && spacesNext > spaces) { 
+                    createSection(lines[i], parents, spaces);
+	        } else {
+	            if (spaces != prevSpaces) {
+			while (spaces < parents.length){
+		            parents.pop();
+		        }
+		    }
+                    let itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+                    itemDiv.textContent = lines[i];
+                    let parent = parents[parents.length - 1];
+                    parent.appendChild(itemDiv);
+                }
+                prevSpaces = spaces;
+            }
+        }
+
+        function createSection(line, parents, spaces){
+            if (parents.length == 0 || spaces == (parents.length - 1)) {
+                parents.pop();
+	    } else if (spaces < (parents.length - 1)){
+	        while (spaces <= (parents.length - 1)){
+	            parents.pop();
+	        }
+            }
+
+	    let sectionHeadDiv = document.createElement('div');
+            sectionHeadDiv.className = 'section-head';
+            sectionHeadDiv.textContent = line;
+            let sectionBodyDiv = document.createElement('div');
+            sectionBodyDiv.className = 'section-body';
+            sectionBodyDiv.id = line;
+            parents.push(sectionBodyDiv);
+            let parent = (parents.length <= 1 ? document.body : parents[parents.length - 2]);
+            parent.appendChild(sectionHeadDiv);
+            parent.appendChild(sectionBodyDiv);    
+        }
+       
+let text =`Tips
+ pack alone, use lists afterwards
+ don't take available stuff
+ combine use cases
+ brat co najmenej, co najmensie
+ prisposobit pocasiu
+ co potrebujem/riesim v tychto dnoch
+Documents and valuables
+ Doklady
+  obciansky preukaz
+  europska karta poistenca
+  vodicak
+  vlakova karticka
+  isic
+  pas
+  vytlacene listky, poistenie
+  ladvinka na doklady
+  kluce - zminimalizovat
+ Peniaze
+  revolut karta
+  bankova karta
+  cash v menach ktore bude (po ceste) treba
+  dostatok penazi na uctoch
+Elektronika
+ Pocitac
+  nabijacka
+  pocitac
+  mys
+ Telefon
+  nabijacka
+  kabel
+  telefon
+ Prislusenstvo
+  powerbanka velka + konektor
+  powerbanka mala + konektor
+  sluchatka
+  adapter na lokalnu koncovku
+Veci po ruke
+ dezinfekcia na ruky
+ sacok
+ repelent
+ opalovaci krem
+ panthenol
+ toaletak / vreckovky
+Hygiena
+ sampon
+ deodorant
+ rychloschnuci uterak
+ kroxy ako papuce + sprcha
+ alpa
+ kefka + pasta
+ listerine
+ tycinky do usi
+ muay
+ aloevera roztok
+ jox
+ sudokrem
+ jeleni loj
+ Lieky
+  paralen
+  kinedril
+  enditril na hnacku
+  fenistil
+ Vitaminy
+  blistrove / nebalene v sacku
+  C vitamin
+  D vitamin
+  magnesium tablety
+  magnesium v prasku
+  kolagen
+  rasca semienka
+  rasca praskova
+  sol
+ First aid
+  obvaz
+  trojcipa satka
+  leukoplast co je ako paska
+  leukplast s vystielkou
+Jedlo a pitie
+ zip lock bags
+ sacok na jedlo
+ nudzove jedlo (tycinky)
+ piskoty
+ cajiky
+ sladkosti
+ radler
+ esus + pokrievka
+ desiatovniky
+ prenosny lad
+ Voda
+  cykloflase
+  klasicke plastove flase
+  vodna rezerva mini flasa
+  termoska
+Oblecenie
+ klobuk / capica
+ prsiplast / ponco
+ ponozky dostatocne hrube
+ underwear boxers
+ tricka kratke
+ termo gate a tricko
+ kratka kosela
+ kratase
+ plavky
+ satka na krk / letna, zimna
+ pyzamo - nahradit kratasami
+ bunda
+ mikina
+ rukavice
+ dlhe gate
+ teplaky
+ turisticke odopinacie kratko-dlhe gate
+ tricka dlhe
+ tielka
+Activities
+ Kemping
+  stan
+  celovka / baterka
+  plynova bomba, varic, zapalovac
+  spacak
+  aluminomatka / kalimatka
+  mapa
+  hojdacia siet
+  rychlovarne cestoviny
+  polovicna lyzicka
+  ranajky / rezerva
+   ovsene vlocky
+   brusnice
+   skorica 
+ Turistika
+  pistalka
+  cucak na vodu
+  cislo na horsku zachrannu sluzbu
+  nepremokavy obal na batoh
+  underwear slips
+ Lyzovanie
+  nosenie lyzi v aute
+   drziaky na nosice
+   nosice na lyze
+   kluce od nosicov na lyze 3ks
+  lyze
+  palice
+  kukla
+  gate
+  bunda
+  rukavice
+  helma
+  okuliare
+  termo pradlo
+ Auto
+  natankovat
+  kvapalina do ostrekovacov - zimna/letna
+  chladiaca kvapalina / destilka
+  nafukat kolesa a rezervu
+  po zime umyt auto
+  zimne / letne pneumatiky
+  Pred STK
+   meet automechanic and do pre STK maintenance
+  Administration
+   Doklady
+    technicak
+    technicka a emisna kontrola
+   poistenie
+   papier o nehode
+   local requirements (Italy - vesta / clovek)
+   dialnicna znamka
+  EDC
+   tycinky
+   powerbanka + kabel
+   telefon
+   hotovost, mince
+   nozik
+   srobovak na baterku
+   startovacie kable
+   reflexne vesty
+   trojuholnik
+   autolekarnicka
+   magnezium tablety sumive
+Other
+ stipce
+ kancelarske spinky na jedlo
+ vacsie sacky, igelitky na organizovanie veci
+ sacky na vracanie, po ruke
+ vrecko na veci co treba po ruke
+ platena prenosna taska / vrecko
+ pero + papier
+ vankusik pod krk
+ knizka / citacka knih
+ sacky
+ igelitka
+ igelitky na zvodeodolnenie veci v batohu
+ nepremokavy obal na batoh
+ sietkovane tasky na organizaciu
+ noz
+ ihla + nit / na vybratie SIM karty
+ gumicky
+ noznicky manikurove
+ pinzeta
+ zicherky
+ puzdro na brile
+ neznicitelne okuliare
+Pred cestou
+ vitaminky, neochoriet
+ refill medkits
+ stiahnut offline mapy
+ cisla na spolubojovnikov, ich rodicov, zazdielat
+ dobit kredit
+ urobit udrzbu veci
+ pozriet pocasie
+ naimpregnovat veci
+ zapisat nudzove lokalne kontakty
+ minimalizovat batoh
+ ostrihat vlasy
+Vecer pred cestou
+ vyspat sa!
+ nabrat vodu
+ nachystat jedlo
+ umyt hlavu
+ osprchovat
+ vycistit usi
+ ostrihat nechty
+ nabit elektroniku`
+
+        createBody(text);
+    </script>
+</head>
+<body>
+</body>
+</html>
