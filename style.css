@@ -20,6 +20,19 @@ img {
   min-width: 50vw
 }
 
+div.glowing.menu {
+  padding: 0px 5px 5px 5px;
+  text-align: center;
+  width: 99%;
+  border-top: none;
+  box-shadow: 0px 3px aqua;
+  margin-bottom: 30px;
+}
+
+.menu-item {
+  margin: 0px 20px;
+}
+
 div.glowing {
   margin: 0 auto;
   display: block;
