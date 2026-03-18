@@ -1,142 +1,100 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8' />
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/jsvectormap.min.css" />
 </head>
 <body>
 
-<div class="glowing menu">
-<a class="menu-item" href=./packing.html>Packing</a>
-<a class="menu-item" href=https://matusmlady.github.io/azivon>Azivon</a>
-<a class="menu-item" href=./cooking.html>Cooking</a>
-</div>
+  <div class="glowing menu">
+    <a class="menu-item" href="./index.html">Home</a>
+    <a class="menu-item" href="./packing.html">Packing</a>
+    <a class="menu-item" href="https://matusmlady.github.io/azivon">Azivon</a>
+  </div>
 
-<div><h2>Erasmus</h2></div>
-<div class="glowing"><ul>
-<li>Checkout <a href=https://esncordoba.org/ target=_blank>Erasmus Student Network</a> and <a href=https://www.cordoba-erasmus.com/ target=_blank>Erasmus Family</a>. They offer WhatsApp groups to connect with other Erasmus students. Each week they organise many free events. They also organize many one day and multiple day trips for affordable prices so you can enjoy Spain and meet new people.</li>
-<li>Buy an ESN card for a 10% + free 20kg luggage Ryanair discount. You will need a small photo.</li>
-<li>Both ESN and Erasmus Family cards offer you discounts for their trips.</li>
-</ul></div>
+  <div id="world-map"></div>
 
-<div><h2>Cordoba</h2></div>
-<div class="glowing"><ul>
-<li>You can fly to both Sevilla and Malaga. Both cities have a bus and train connection with Cordoba. Take a flight arriving before night / leaving later than early morning as no connections from / to cordoba are super early / super late.</li>
-<li>For cheaper busses get a <a href=https://aucorsa.es/tarifa/tarjeta-bono-bus-estudiante/ target="_blank">student bus card</a>. You can recharge the card online for free <a href=https://aucorsa.es/venta-y-gestion-de-tarjetas/ target=_blank>here</a>.</li>
-<li>For a montly train ticket to campus Rabanales for 30e fill out a form at the trainstation. You will need a small photo.</li>
-<li>You can also buy a 10 trip ticket for 10e without registration.</li>
-<li>Local busses only accept cash payment.</li>
-</ul></div>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+  <script>
+    const visitedCountries = [
+      "SK", // Slovakia
+      "CZ", // Czechia
+      "ES", // Spain
+      "MA", // Morocco
+      "PT", // Lisbon -> Portugal
+      "GB", // Great Britain
+      "AT", // Austria
+      "PL", // Poland
+      "RO", // Romania
+      "CH", // Switzerland
+      "IT", // Italy
+      "NO",  // Norway
+    ];
 
-<div><h2>Spain</h2></div>
-<div class="glowing"><ul>
-<li>Carry cash as some places dont accept card below a certain limit.</li>
-<li>For withdrawal without fees use Cajasur ATMs with Revolut card.</li>
-<li>Get a room with its own AC, not a central one for the apartment.</li>
-<li>To buy general things you can use a chinese bazar, as they have a huge sortiment.</li>
-<li>Many stores like super markets are closed on Sundays and holidays. Smaller lie Proxi or Carrefour however stay opened.</li>
-<li>In order to access some clubs / buy alcohol you should carry your ID on you at all times.</li>
-<li>Use the Renfe app to search for train connections.</li>
-<li>Use the Alsa app for busses.</li>
-<li>If can't find a connection on these use the Omio app.</li>
-</ul></div>
+    const menu = document.querySelector("div.glowing.menu");
+    const mapElement = document.getElementById("world-map");
 
-<div><h2>Revolut</h2></div>
-<div class="glowing"><ul>
-<li>Revolut has the lowest exchange rates on the market.</li>
-<li>With the free plan every rolling month you can</li>
-	<ol><li>exchange up to 1000 euros in your account currency</li>
-	<li>zero Revolut fees for ATM withdrwal up to 200 euros in your currency</li></ol>
-<li>ATM's bank may however still charge you as both parties typically have fees.</li>
-<li>You can check when does your account's rolling month start in the app.</li>
-<li>Every couple of days/weeks there is a new referral bonus for inviting your friends.</li>
-<li>The best refferal bonus is the guaranteed 40 euros for the inviting person.</li>
-<li>You receive these once</li>
-	<ol><li>your refferal signs up via your link</li>
-	<li>they order a physical debit card for 7 euros</li>
-	<li>they make 3 purchases of minimum 5 euros with their account's card</li></ol>
-<li>You can use one time disposable cards to protect your privacy</li>
-<li>Exchange rates are 1% more expensive during weekends.</li>
-</ul></div>
+    function resizeMapArea(mapInstance) {
+      const menuHeight = menu.offsetHeight;
+      mapElement.style.height = `calc(100vh - ${menuHeight}px)`;
+      mapInstance.updateSize();
+    }
 
-<div><h2>Ryanair</h2></div>
-<div class="glowing"><ul>
-<li>You can take a free bag with you with the dimensions 40 * 30 * 20 cm.</li>
-<li>Do not choose a seat on the website as this costs extra. Click on continue with random assignment / remove the chosen seat at checkout.</li>
-<li>You need to check in online from 24 hours to 2 hours before the flight.</li>
-<li>Boarding passes are now only digital, however you can still get a physical one before boarding if you checked in online.</li>
-<li>Onboard you can carry 10 100ml containers of liquids in a transparent bag. Beware sometimes they provide the main plastic bag and 10 containers will not fit in so take less.</li>
-</ul></div>
+    const map = new jsVectorMap({
+      selector: "#world-map",
+      map: "world",
+      backgroundColor: "transparent",
 
-<div><h2>Flying</h2></div>
-<div class="glowing"><ul>
-<li>Self check in luggage for larger bags is now common. You scan your boarding pass and the machine prints you a luggage sticker with code. You put it on the bag yourself or you can ask for help from the airport staff.</li>
-<li>Dont forget any liquids (creams, disinfection, eye drops) inside your bag, as they may unpack your stuff to check it out.</li>
-<li>If you have prohibited things like too much liquids or things with sharp edges you will need to throw them out.</li>
-<li>In order to save weight and volume in your checkin luggage make use of pockets on your jacket and trousers. Do clothes layering.</li>
-<li>Chew a chewing gum, multiple of them in fact during takeoff and landing if you have problems with the change of pressure.</li>
-<li>Book the plane ticket the soonest time possible, prices fluctuate but also get higher over time.</li>
-</ul></div>
+      draggable: true,
+      zoomButtons: false,
+      zoomOnScroll: true,
+      bindTouchEvents: true,
+      zoomAnimate: true,
+      zoomStep: 1.2,
+      zoomMin: 1,
+      zoomMax: 12,
 
-<div><h2>Slovakia</h2></div>
-<div class="glowing"><ul>
-<li>Operator O2 offers cheap phone number program called O2 volnost (=freedom). You can call anyone in EU for 15 cents per call/hour.</li>
-<li>Operator 4ka offers data 1GB for 4 weeks for just 2 euros.</li>
-<li>Buying train tickets online saves you service fee 1 euro.</li>
-</ul></div>
+      showTooltip: false,
+      selectedRegions: visitedCountries,
 
-<div><h2>Czechia</h2></div>
-<div class="glowing"><ul>
-<li>1 euro is equal to 25 czech crowns (CZK).</li>
-<li>You can get a credit number from Telecom for just 200 CZK.</li>
-<li>Raiffeisen offers free account for students.</li>
-<li>When creating a referral you get 1000 CZK.</li>
-<li>Lots of times they have a promotion to get 500 CZK for 6 months when using the debit card after account creation.</li>
-<li>For withdrawal without fees use Raifansen ATMs with Revolut card.</li>
-<li>To get CZK into your Raifansen account for free, withdraw them first with Revolut card. Next insert Raifansen card and put the money back into the ATM.</li>
-</ul></div>
+      focusOn: {
+        regions: visitedCountries,
+        animate: false
+      },
 
-<div><h2>Brno</h2></div>
-<div class="glowing"><ul>
-<li>Arrange VUT school cantines by going to central VUT school cantine at Technologicky park.</li>
-<li>Buy a šalinkarta transport card, 100e a year for students.</li>
-<li>Use DPMB app for connections public transport.</li>
-<li>As a student don't forget to pay for trash, you could have an execution if you don't. Afterwards you can cancel trash payment at your home town.</li>
-<li><a href=https://aucorsa.es/tarifa/tarjeta-bono-bus-estudiante/ target="_blank">Parking</a> is free for 1 hour in every zone after online registration.</li>
-</ul></div>
+      regionStyle: {
+        initial: {
+          fill: "#000000",
+          stroke: "#000000",
+          "stroke-width": 0.12
+        },
+        hover: {
+          fill: "#000000",
+          stroke: "#000000",
+          "stroke-width": 0.12,
+          cursor: "default"
+        },
+        selected: {
+          fill: "#00ffff",
+          stroke: "#00ffff",
+          "stroke-width": 0.12
+        },
+        selectedHover: {
+          fill: "#66ffff",
+          stroke: "#66ffff",
+          "stroke-width": 0.12
+        }
+      },
 
-<div><h2>Partying</h2></div>
-<div class="glowing"><ul>
-<li>Some clubs require long sleeve good looking clothes for males. This means a polo collar.</li>
-<li>Put down the hoodie before coming to the club.</li>
-<li>Dont fall in clubs as there may be broken glass on the floor.</li>
-<li>You can request music from the DJ by writing the name of the song on your phone.</li>
-<li>Prices of drinks may rise throughout the night. F.e. after midnight.</li>
-<li>When organising a party mention that people should bring their drinks otherwise they may not.</li>
-</ul></div>
-
-<div><h2>Buses</h2></div>
-<div class="glowing"><ul>
-<li>Busses can be full, so it is better to buy tickets in advance.</li>
-<li>Buying ticket in person saves you online service fee.</li>
-<li>The physical ticket can be marked as used by tearing it. Don't destroy your ticket accidentaly.</li>
-<li>Store your physical ticket in your wallet or phone so you don't accidentaly trash it and you can find it easily.</li>
-<li>If you get motion sickness you should not use your phone on a bus.</li>
-</ul></div>
-
-<div><h2>Bouldering</h2></div>
-<div class="glowing"><ul>
-<li>Bouldering is climbing to tops 3 meters without gear.</li>
-<li>Cut your nails beforehand.</li>
-<li>Take scissors for cutting your nails. To borrow or do at the place.</li>
-<li>Take tape plaster for injuries.</li>
-<li>Take dust or liquid climbing magnesium.</li>
-<li>Your clothes will be all white from magnesium.</li>
-<li>Take some water to drink.</li>
-<li>Slowly increase the height you jump from.</li>
-</ul></div>
+      onLoaded(mapInstance) {
+        resizeMapArea(mapInstance);
+        window.addEventListener("resize", () => resizeMapArea(mapInstance));
+      }
+    });
+  </script>
 
 </body>
 </html>
-
-
