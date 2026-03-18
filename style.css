@@ -45,3 +45,23 @@ div.glowing {
 a {
   color: aqua;
 }
+
+#world-map {
+  width: 100%;
+  height: 78vh;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+#world-map .jvm-container,
+#world-map svg {
+  background: transparent !important;
+}
+
+.jvm-tooltip {
+  display: none !important;
+}
